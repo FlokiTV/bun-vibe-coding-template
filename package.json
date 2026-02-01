@@ -1,0 +1,22 @@
+{
+	"name": "bun-vibe-coding-template",
+	"module": "index.ts",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"start": "bun ./server/index.ts",
+		"dev": "bun --watch ./server/index.ts",
+		"lint": "bunx biome check --write"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.13",
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"dependencies": {
+		"@types/react-dom": "^19.2.3",
+		"react-dom": "^19.2.4"
+	}
+}
