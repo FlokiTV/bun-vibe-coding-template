@@ -1,3 +1,4 @@
+import { posts } from "@api/posts";
 import { serve } from "bun";
 import homepage from "../public/index.html";
 
@@ -9,18 +10,23 @@ if (!isDev) {
 
 const server = serve({
 	port: 3000,
-	routes: {
-		"/": homepage,
-	},
 	// Enable development mode if --watch is passed
 	development: {
 		hmr: isDev,
 		console: isDev,
 	},
-
+	// Routes
+	routes: {
+		"/": homepage,
+		...posts,
+	},
 	// Fallback for unmatched routes
 	fetch(_req) {
 		return new Response("Not Found", { status: 404 });
+	},
+	error(error) {
+		console.error(error);
+		return new Response("Internal Server Error", { status: 500 });
 	},
 });
 
