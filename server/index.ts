@@ -1,6 +1,6 @@
-import { postsRoutes } from "@api/posts";
 import { serve } from "bun";
 import homepage from "../public/index.html";
+import { postsController } from "./controllers/postController";
 
 const args = process.execArgv;
 const isDev = args.includes("--watch");
@@ -18,7 +18,7 @@ const server = serve({
 	// Routes
 	routes: {
 		"/": homepage,
-		...postsRoutes,
+		...postsController,
 	},
 	// Fallback for unmatched routes
 	fetch(_req) {
