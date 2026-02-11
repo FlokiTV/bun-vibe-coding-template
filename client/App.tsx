@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Chat } from "./components/Chat";
 import { PostForm } from "./components/PostForm";
 import { PostList } from "./components/PostList";
 
@@ -44,6 +45,7 @@ export function App() {
 					<p>© 2026 Vibe Coding - SPA Example</p>
 				</footer>
 			</div>
+			<Chat />
 		</div>
 	);
 }
