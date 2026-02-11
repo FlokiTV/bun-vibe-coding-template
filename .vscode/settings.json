@@ -1,15 +1,13 @@
 {
-  "files.associations": {
-    "*.css": "tailwindcss"
-  },
-  "tailwindCSS.includeLanguages": {
-    "css": "css"
-  },
-  "tailwindCSS.experimental.classRegex": [
-    "[^<]*"
-  ],
-  "tailwindCSS.validate": true,
-  "tailwindCSS.emmetCompletions": true,
-  "tailwindCSS.showPixelEquivalents": true,
-  "tailwindCSS.colorDecorators": true
+	"files.associations": {
+		"*.css": "tailwindcss"
+	},
+	"tailwindCSS.includeLanguages": {
+		"css": "css"
+	},
+	"tailwindCSS.experimental.classRegex": ["[^<]*"],
+	"tailwindCSS.validate": true,
+	"tailwindCSS.emmetCompletions": true,
+	"tailwindCSS.showPixelEquivalents": true,
+	"tailwindCSS.colorDecorators": true
 }
