@@ -1,4 +1,4 @@
-import { posts } from "@api/posts";
+import { postsRoutes } from "@api/posts";
 import { serve } from "bun";
 import homepage from "../public/index.html";
 
@@ -18,7 +18,7 @@ const server = serve({
 	// Routes
 	routes: {
 		"/": homepage,
-		...posts,
+		...postsRoutes,
 	},
 	// Fallback for unmatched routes
 	fetch(_req) {

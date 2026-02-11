@@ -2,7 +2,7 @@ import { db } from "@db";
 import type { Post } from "@types";
 import { router } from "@utils/rounter";
 
-export const posts = router({
+export const postsRoutes = router({
 	// List posts
 	"/api/posts": {
 		GET: () => {
