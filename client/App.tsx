@@ -41,7 +41,7 @@ export function App() {
 				</main>
 
 				<footer className="mt-16 text-center text-gray-500">
-					<p>© 2024 Vibe Coding - SPA Example</p>
+					<p>© 2026 Vibe Coding - SPA Example</p>
 				</footer>
 			</div>
 		</div>
