@@ -4,6 +4,18 @@ This is a backend project template using [Bun](https://bun.com), organized in a 
 
 > 🇧🇷 [Leia em Português](README-pt.md)
 
+## ✨ Features
+
+- ⚡ **Bun**: Ultra-fast JavaScript runtime and package manager.
+- 🔷 **TypeScript**: Strongly typed code for better maintainability.
+- 🏗️ **Modular Architecture**: Clean separation of concerns inspired by NestJS (Modules, Services, Controllers, Repositories).
+- ⚛️ **React**: Modern frontend library for building user interfaces.
+- 🎨 **TailwindCSS**: Utility-first CSS framework for rapid UI development.
+- 🗄️ **SQLite**: Lightweight and embedded database.
+- 🛠️ **Biome**: Fast formatter and linter.
+- 🔌 **WebSocket**: Native real-time communication support.
+- 🔥 **Hot Reload**: Instant feedback during development.
+
 ## 🚀 Installation and Execution
 
 To install dependencies:

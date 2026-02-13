@@ -2,6 +2,18 @@
 
 Este é um template de projeto backend usando [Bun](https://bun.com), organizado em uma **Arquitetura Modular** (inspirada no NestJS) para manter o código limpo, escalável e desacoplado.
 
+## ✨ Funcionalidades
+
+- ⚡ **Bun**: Runtime e gerenciador de pacotes JavaScript ultra-rápido.
+- 🔷 **TypeScript**: Código fortemente tipado para melhor manutenibilidade.
+- 🏗️ **Arquitetura Modular**: Separação clara de responsabilidades inspirada no NestJS (Módulos, Serviços, Controllers, Repositórios).
+- ⚛️ **React**: Biblioteca frontend moderna para construção de interfaces.
+- 🎨 **TailwindCSS**: Framework CSS utilitário para desenvolvimento rápido de UI.
+- 🗄️ **SQLite**: Banco de dados leve e embutido.
+- 🛠️ **Biome**: Formatador e linter rápido.
+- 🔌 **WebSocket**: Suporte nativo a comunicação em tempo real.
+- 🔥 **Hot Reload**: Feedback instantâneo durante o desenvolvimento.
+
 ## 🚀 Instalação e Execução
 
 Para instalar as dependências:
