@@ -1,53 +1,45 @@
 import { BaseWebsocket } from "@common/base.ws";
-import type { Server, ServerWebSocket } from "bun";
+import type { WebsocketData } from "@types";
+import type { ServerWebSocket } from "bun";
 
-type ChatWebsocketData = { username: string };
+class ChatWebsocketService extends BaseWebsocket<WebsocketData> {
+	private readonly TOPIC = "the-group-chat";
 
-class ChatWebsocketService extends BaseWebsocket<ChatWebsocketData> {
-  private server: Server<ChatWebsocketData> | undefined;
-  private readonly TOPIC = "the-group-chat";
+	message(
+		ws: ServerWebSocket<WebsocketData>,
+		message: string | Buffer<ArrayBuffer>,
+	) {
+		const data = ws.data as WebsocketData;
+		// this is a group chat
+		// so the server re-broadcasts incoming message to everyone
+		this.getServer().publish(this.TOPIC, `${data.username}: ${message}`);
 
-  setServer(server: Server<ChatWebsocketData>) {
-    this.server = server;
-  }
+		// inspect current subscriptions
+		console.log(ws.subscriptions); // ["the-group-chat"]
+		console.log("ChatWebsocket message", message);
+	}
 
-  private getServer(): Server<ChatWebsocketData> {
-    if (!this.server) {
-      throw new Error("Server not initialized in ChatWebsocketService");
-    }
-    return this.server;
-  }
+	open(ws: ServerWebSocket<WebsocketData>): void {
+		const data = ws.data as WebsocketData;
+		const msg = `${data.username} has entered the chat`;
+		ws.subscribe(this.TOPIC);
+		this.getServer().publish(this.TOPIC, msg);
+	}
 
-  message(ws: ServerWebSocket<ChatWebsocketData>, message: string | Buffer<ArrayBuffer>) {
-    const data = ws.data as ChatWebsocketData;
-    // this is a group chat
-    // so the server re-broadcasts incoming message to everyone
-    this.getServer().publish(this.TOPIC, `${data.username}: ${message}`);
+	close(
+		ws: ServerWebSocket<WebsocketData>,
+		_code: number,
+		_message: string,
+	): void {
+		const data = ws.data as WebsocketData;
+		const msg = `${data.username} has left the chat`;
+		ws.unsubscribe(this.TOPIC);
+		this.getServer().publish(this.TOPIC, msg);
+	}
 
-    // inspect current subscriptions
-    console.log(ws.subscriptions); // ["the-group-chat"]
-    console.log("ChatWebsocket message", message);
-  }
-
-  open(ws: ServerWebSocket<ChatWebsocketData>): void {
-    const data = ws.data as ChatWebsocketData;
-    const msg = `${data.username} has entered the chat`;
-    ws.subscribe(this.TOPIC);
-    this.getServer().publish(this.TOPIC, msg);
-  }
-
-  close(ws: ServerWebSocket<ChatWebsocketData>, _code: number, _message: string): void {
-    const data = ws.data as ChatWebsocketData;
-    const msg = `${data.username} has left the chat`;
-    ws.unsubscribe(this.TOPIC);
-    this.getServer().publish(this.TOPIC, msg);
-  }
-
-  drain(_ws: ServerWebSocket<ChatWebsocketData>): void {
-    // Implement drain handler if needed
-  }
+	drain(_ws: ServerWebSocket<WebsocketData>): void {
+		// Implement drain handler if needed
+	}
 }
 
 export const ChatWebsocket = new ChatWebsocketService();
-
-

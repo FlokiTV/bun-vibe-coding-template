@@ -1,5 +1,6 @@
+import { BaseModule } from "@common/base.module";
 import { ChatWebsocket } from "./chat.ws";
 
-export const ChatModule = {
-	websocket: ChatWebsocket,
-};
+export class ChatModule extends BaseModule {
+	override websocket = ChatWebsocket;
+}

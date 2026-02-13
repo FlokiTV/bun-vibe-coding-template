@@ -29,6 +29,7 @@
 			"@db": ["./server/db/db"],
 			"@types": ["./server/types/index"],
 			"@utils/*": ["./server/utils/*"],
+			"@public/*": ["./public/*"],
 			"@common/*": ["./server/common/*"],
 			"@modules/*": ["./server/modules/*"],
 			"@api/*": ["./server/api/*"]
