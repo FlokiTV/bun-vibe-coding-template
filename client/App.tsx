@@ -1,17 +1,15 @@
 import { Link, Route } from "wouter";
-import { Chat } from "./components/Chat";
-import { Home } from "./pages/home";
+import { routes } from "./routes";
 
 export function App() {
 	return (
 		<>
 			<Link href="/chat">Chat</Link>
-			<Route path="/">
-				<Home />
-			</Route>
-			<Route path="/chat">
-				<Chat />
-			</Route>
+			{routes.map(({ path, component: Component }) => (
+				<Route key={path} path={path}>
+					<Component />
+				</Route>
+			))}
 		</>
 	);
 }

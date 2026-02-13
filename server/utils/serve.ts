@@ -1,7 +1,8 @@
 import type { BaseModule } from "@common/base.module";
 import homepage from "@public/index.html";
 import type { WebsocketData } from "@types";
-import { serve } from "bun";
+import { type HTMLBundle, serve } from "bun";
+import { routes } from "../../client/routes";
 
 const args = process.execArgv;
 const isDev = args.includes("--watch");
@@ -15,6 +16,14 @@ export function register(modules: (new () => BaseModule)[]) {
 	MODULES.push(...modules.map((M) => new M()));
 }
 
+function getFrontendRoutes() {
+	const newRoutes = {} as Record<string, HTMLBundle>;
+	routes.forEach(({ path }) => {
+		newRoutes[path] = homepage;
+	});
+	return newRoutes;
+}
+
 export function init() {
 	const server = serve({
 		port: 3000,
@@ -25,7 +34,7 @@ export function init() {
 		},
 		// Routes
 		routes: {
-			"/": homepage,
+			...getFrontendRoutes(), // { "/": homepage, "/chat": homepage }
 			"/ws": (req, server) => {
 				console.log(`upgrade!`);
 				const url = new URL(req.url);
