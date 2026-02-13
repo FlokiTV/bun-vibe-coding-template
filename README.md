@@ -103,16 +103,31 @@ export const commentsController = router({
 ```
 
 ### 6. Create the Module (`module.ts`) and Register
-Export the controller in your module file and register it in `server/index.ts`.
+Group the controller, service, and websocket (if any) into a class that extends `BaseModule`.
+
+```typescript
+// server/modules/comments/comments.module.ts
+import { BaseModule } from "@common/base.module";
+import { commentsController } from "./comments.controller";
+import { commentsService } from "./comments.service";
+
+export class CommentsModule extends BaseModule {
+  controller = commentsController;
+  service = commentsService;
+}
+```
+
+Register the module in `server/index.ts`:
 
 ```typescript
 // server/index.ts
 import { CommentsModule } from "@modules/comments/comments.module";
 
-routes: {
-    ...CommentsModule.controller,
-},
-};
+// Add to the module list for automatic registration
+register([
+  CommentsModule,
+  // other modules...
+]);
 ```
 
 ## 🔌 How to Create a WebSocket Component
@@ -130,24 +145,31 @@ type MyWebsocketData = {
 ```
 
 ### 2. Create the WebSocket Service (`feature.ws.ts`)
-Extend `BaseWebsocket` with your data type and implement the required methods.
+Extend `BaseWebsocket` with your data type and implement the required methods. You have access to the server instance via `this.getServer()` to use features like Pub/Sub.
 
 ```typescript
 import { BaseWebsocket } from "@common/base.ws";
 import type { ServerWebSocket } from "bun";
 
 export class MyWebsocketService extends BaseWebsocket<MyWebsocketData> {
-  message(ws: ServerWebSocket<MyWebsocketData>, message: string | Buffer<ArrayBuffer>): void {
-    // Handle incoming messages
-    ws.send(`Echo: ${message}`);
-  }
+  // Topic for Pub/Sub
+  private readonly TOPIC = "my-topic";
 
   open(ws: ServerWebSocket<MyWebsocketData>): void {
     console.log("Client connected");
+    // Subscribe client to a topic
+    ws.subscribe(this.TOPIC);
+    // Publish message to everyone on the topic
+    this.getServer().publish(this.TOPIC, "New user joined!");
+  }
+
+  message(ws: ServerWebSocket<MyWebsocketData>, message: string | Buffer<ArrayBuffer>): void {
+    // Send message back only to the sender
+    ws.send(`Echo: ${message}`);
   }
 
   close(ws: ServerWebSocket<MyWebsocketData>, code: number, reason: string): void {
-    console.log("Client disconnected");
+    ws.unsubscribe(this.TOPIC);
   }
 
   drain(ws: ServerWebSocket<MyWebsocketData>): void {}
@@ -156,24 +178,17 @@ export class MyWebsocketService extends BaseWebsocket<MyWebsocketData> {
 export const myWebsocket = new MyWebsocketService();
 ```
 
-### 3. Register in `server/index.ts`
-Update the `websocket` handlers in `server/index.ts` to delegate events to your service.
+### 3. Integrate into the Module
+Add the WebSocket service to your module.
 
 ```typescript
-// server/index.ts
-import { myWebsocket } from "@modules/my-feature/feature.ws";
-
-// ... inside serve({ ... })
-websocket: {
-  message(ws, msg) {
-    myWebsocket.message(ws, msg);
-  },
-  open(ws) {
-    myWebsocket.open(ws);
-  },
-  // ... implement close and drain
+// comments.module.ts
+export class CommentsModule extends BaseModule {
+  // ...
+  websocket = myWebsocket;
 }
 ```
+Server registration happens automatically when registering the module.
 
 ## 🎨 Frontend
 
