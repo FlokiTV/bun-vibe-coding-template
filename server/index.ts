@@ -1,3 +1,4 @@
+import { ChatModule } from "@modules/chat/chat.module";
 import { PostsModule } from "@modules/posts/posts.module";
 import { serve } from "bun";
 import homepage from "../public/index.html";
@@ -37,29 +38,24 @@ const server = serve({
 	websocket: {
 		data: {} as { username: string },
 		message(ws, message) {
-			// this is a group chat
-			// so the server re-broadcasts incoming message to everyone
-			server.publish("the-group-chat", `${ws.data.username}: ${message}`);
-
-			// inspect current subscriptions
-			console.log(ws.subscriptions); // ["the-group-chat"]
-		}, // a message is received
+			ChatModule.websocket.message(ws, message);
+		},
 		open(ws) {
-			const msg = `${ws.data.username} has entered the chat`;
-			ws.subscribe("the-group-chat");
-			server.publish("the-group-chat", msg);
-		}, // a socket is opened
-		close(ws, _code, _message) {
-			const msg = `${ws.data.username} has left the chat`;
-			ws.unsubscribe("the-group-chat");
-			server.publish("the-group-chat", msg);
-		}, // a socket is closed
-		drain(_ws) {}, // the socket is ready to receive more data
+			ChatModule.websocket.open(ws);
+		},
+		close(ws, code, message) {
+			ChatModule.websocket.close(ws, code, message);
+		},
+		drain(ws) {
+			ChatModule.websocket.drain(ws);
+		},
 	},
 	error(error) {
 		console.error(error);
 		return new Response("Internal Server Error", { status: 500 });
 	},
 });
+
+ChatModule.websocket.setServer(server);
 
 console.log(`Server running on port ${server.port}`);
