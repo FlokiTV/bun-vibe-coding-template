@@ -112,6 +112,67 @@ import { CommentsModule } from "@modules/comments/comments.module";
 routes: {
     ...CommentsModule.controller,
 },
+};
+```
+
+## 🔌 How to Create a WebSocket Component
+
+To add real-time capabilities (like the Chat module), follow this structure:
+
+### 1. Define the Data Type
+Define the shape of the data attached to each WebSocket connection (e.g., username, session ID).
+
+```typescript
+type MyWebsocketData = {
+  userId: string;
+  channel: string;
+};
+```
+
+### 2. Create the WebSocket Service (`feature.ws.ts`)
+Extend `BaseWebsocket` with your data type and implement the required methods.
+
+```typescript
+import { BaseWebsocket } from "@common/base.ws";
+import type { ServerWebSocket } from "bun";
+
+export class MyWebsocketService extends BaseWebsocket<MyWebsocketData> {
+  message(ws: ServerWebSocket<MyWebsocketData>, message: string | Buffer<ArrayBuffer>): void {
+    // Handle incoming messages
+    ws.send(`Echo: ${message}`);
+  }
+
+  open(ws: ServerWebSocket<MyWebsocketData>): void {
+    console.log("Client connected");
+  }
+
+  close(ws: ServerWebSocket<MyWebsocketData>, code: number, reason: string): void {
+    console.log("Client disconnected");
+  }
+
+  drain(ws: ServerWebSocket<MyWebsocketData>): void {}
+}
+
+export const myWebsocket = new MyWebsocketService();
+```
+
+### 3. Register in `server/index.ts`
+Update the `websocket` handlers in `server/index.ts` to delegate events to your service.
+
+```typescript
+// server/index.ts
+import { myWebsocket } from "@modules/my-feature/feature.ws";
+
+// ... inside serve({ ... })
+websocket: {
+  message(ws, msg) {
+    myWebsocket.message(ws, msg);
+  },
+  open(ws) {
+    myWebsocket.open(ws);
+  },
+  // ... implement close and drain
+}
 ```
 
 ## 🎨 Frontend
