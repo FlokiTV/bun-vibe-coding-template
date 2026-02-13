@@ -53,6 +53,7 @@ export function init() {
 			},
 			open(ws) {
 				MODULES.forEach((module) => {
+					module.websocket?.setServer(server);
 					module.websocket?.open(ws);
 				});
 			},
