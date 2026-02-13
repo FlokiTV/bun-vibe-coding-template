@@ -1,6 +1,6 @@
 import { serve } from "bun";
 import homepage from "../public/index.html";
-import { postsController } from "./controllers/postController";
+import { PostsModule } from "./modules/posts/posts.module";
 
 const args = process.execArgv;
 const isDev = args.includes("--watch");
@@ -27,7 +27,7 @@ const server = serve({
 				? undefined
 				: new Response("WebSocket upgrade error", { status: 400 });
 		},
-		...postsController,
+		...PostsModule.controller,
 	},
 
 	// Fallback for unmatched routes

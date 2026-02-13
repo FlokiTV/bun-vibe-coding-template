@@ -1,1 +1,1 @@
-export type { Post } from "./post";
+export type { Post } from "../modules/posts/entities/post.entity";
