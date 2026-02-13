@@ -1,6 +1,6 @@
 # Bun Vibe Coding Template
 
-Este é um template de projeto backend usando [Bun](https://bun.com), organizado no padrão **MVC (Model-View-Controller)** para manter o código limpo, escalável e desacoplado.
+Este é um template de projeto backend usando [Bun](https://bun.com), organizado em uma **Arquitetura Modular** (inspirada no NestJS) para manter o código limpo, escalável e desacoplado.
 
 ## 🚀 Instalação e Execução
 
@@ -24,63 +24,79 @@ bun run dev
 
 ## 📂 Estrutura do Projeto
 
-O projeto segue a arquitetura MVC simplificada:
+O projeto segue uma arquitetura modular:
 
-- **server/models/**: Camada de dados. Aqui ficam as queries SQL e a interação direta com o banco de dados.
-- **server/controllers/**: Camada de controle. Aqui fica a lógica de negócios e o tratamento das requisições HTTP.
-- **server/types/**: Definições de tipos TypeScript.
+- **server/modules/**: Módulos de funcionalidades (ex: `posts/`, `users/`). Cada módulo contém:
+  - **dto/**: Data Transfer Objects (validação e definição de tipos para requisições).
+  - **entities/**: Entidades de domínio (modelos do banco).
+  - **controllers**: Lida com as requisições HTTP.
+  - **services**: Lógica de negócios.
+  - **repositories**: Interações com o banco de dados.
+  - **module**: Ponto de entrada do módulo.
+- **server/common/**: Recursos compartilhados como BaseService e BaseRepository.
 - **public/**: Frontend da aplicação (HTML/CSS/JS estáticos).
 
-## 🛠️ Como criar uma nova rota
+## 🛠️ Como criar um novo módulo
 
-Para adicionar uma nova funcionalidade (ex: "Comentários"), siga este fluxo para manter o padrão:
+Para adicionar uma nova funcionalidade (ex: "Comentários"), siga este fluxo:
 
-### 1. Crie o Tipo (Opcional)
-Se houver uma nova estrutura de dados, defina em `server/types/`.
+### 1. Crie a Estrutura de Diretórios
+Crie `server/modules/comments/` com `dto`, `entities` e os arquivos.
 
-### 2. Crie o Model (`server/models/`)
-Crie um arquivo para abstrair o banco de dados. Ex: `server/models/commentModel.ts`.
-Aqui você coloca **apenas** o código SQL e métodos de acesso aos dados.
-
+### 2. Defina a Entidade e DTOs
 ```typescript
-// server/models/commentModel.ts
-import { db } from "@db";
+// entities/comment.entity.ts
+export class Comment {
+  id!: string;
+  content!: string;
+  // ...
+}
 
-export const CommentModel = {
-  findAll: () => db.query("SELECT * FROM comments").all(),
-  create: (content: string) => { /* lógica de insert */ }
-};
+// dto/create-comment.dto.ts
+export class CreateCommentDto {
+  content!: string;
+}
 ```
 
-### 3. Crie o Controller (`server/controllers/`)
-Crie um arquivo para gerenciar as rotas. Ex: `server/controllers/commentController.ts`.
-Aqui você usa o Model e define as rotas HTTP.
-
+### 3. Crie o Repositório (`repository.ts`)
+Estenda `BaseRepository` para lidar com operações de banco.
 ```typescript
-// server/controllers/commentController.ts
-import { router } from "@utils/rounter";
-import { CommentModel } from "../models/commentModel";
+export class CommentsRepository extends BaseRepository<Comment, CreateCommentDto> {
+  // Implemente os métodos abstratos (findAll, create, etc.)
+}
+```
 
-export const commentController = router({
+### 4. Crie o Serviço (`service.ts`)
+Estenda `BaseService` e use o Repositório.
+```typescript
+export class CommentsService extends BaseService<Comment, CreateCommentDto> {
+  constructor() {
+    super();
+    this.repo = new CommentsRepository();
+  }
+}
+```
+
+### 5. Crie o Controller (`controller.ts`)
+Defina as rotas usando o Serviço.
+```typescript
+export const commentsController = router({
   "/api/comments": {
-    GET: () => Response.json(CommentModel.findAll()),
-    POST: async (req) => { /* lógica */ }
+    GET: () => Response.json(commentsService.findAll()),
+    POST: async (req) => { /* ... */ }
   }
 });
 ```
 
-### 4. Registre no Servidor (`server/index.ts`)
-Importe seu controller e adicione nas rotas do servidor.
+### 6. Crie o Módulo (`module.ts`) e Registre
+Exporte o controller no arquivo do módulo e registre no `server/index.ts`.
 
 ```typescript
 // server/index.ts
-import { commentController } from "./controllers/commentController";
+import { CommentsModule } from "./modules/comments/comments.module";
 
-// ...
 routes: {
-    "/": homepage,
-    ...postsController,
-    ...commentController, // Adicione aqui
+    ...CommentsModule.controller,
 },
 ```
 

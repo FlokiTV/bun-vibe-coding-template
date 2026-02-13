@@ -1,6 +1,6 @@
 # Bun Vibe Coding Template
 
-This is a backend project template using [Bun](https://bun.com), organized in the **MVC (Model-View-Controller)** pattern to keep code clean, scalable, and decoupled.
+This is a backend project template using [Bun](https://bun.com), organized in a **Modular Architecture** (inspired by NestJS) to keep code clean, scalable, and decoupled.
 
 > 🇧🇷 [Leia em Português](README-pt.md)
 
@@ -26,63 +26,79 @@ bun run dev
 
 ## 📂 Project Structure
 
-The project follows a simplified MVC architecture:
+The project follows a modular architecture:
 
-- **server/models/**: Data layer. Contains SQL queries and direct database interactions.
-- **server/controllers/**: Control layer. Contains business logic and HTTP request handling.
-- **server/types/**: TypeScript type definitions.
+- **server/modules/**: Feature modules (e.g., `posts/`, `users/`). Each module contains:
+  - **dto/**: Data Transfer Objects (validation and type definition for requests).
+  - **entities/**: Domain entities (database models).
+  - **controllers**: Handles HTTP requests.
+  - **services**: Business logic.
+  - **repositories**: Database interactions.
+  - **module**: Entry point for the module.
+- **server/common/**: Shared resources like BaseService and BaseRepository.
 - **public/**: Frontend application (static HTML/CSS/JS).
 
-## 🛠️ How to Create a New Route
+## 🛠️ How to Create a New Module
 
-To add a new feature (e.g., "Comments"), follow this flow to maintain the pattern:
+To add a new feature (e.g., "Comments"), follow this flow:
 
-### 1. Create the Type (Optional)
-If there is a new data structure, define it in `server/types/`.
+### 1. Create the Directory Structure
+Create `server/modules/comments/` with `dto`, `entities`, and files.
 
-### 2. Create the Model (`server/models/`)
-Create a file to abstract the database. E.g., `server/models/commentModel.ts`.
-Here you place **only** the SQL code and data access methods.
-
+### 2. Define Entity and DTOs
 ```typescript
-// server/models/commentModel.ts
-import { db } from "@db";
+// entities/comment.entity.ts
+export class Comment {
+  id!: string;
+  content!: string;
+  // ...
+}
 
-export const CommentModel = {
-  findAll: () => db.query("SELECT * FROM comments").all(),
-  create: (content: string) => { /* insert logic */ }
-};
+// dto/create-comment.dto.ts
+export class CreateCommentDto {
+  content!: string;
+}
 ```
 
-### 3. Create the Controller (`server/controllers/`)
-Create a file to manage routes. E.g., `server/controllers/commentController.ts`.
-Here you use the Model and define HTTP routes.
-
+### 3. Create the Repository (`repository.ts`)
+Extend `BaseRepository` to handle database operations.
 ```typescript
-// server/controllers/commentController.ts
-import { router } from "@utils/rounter";
-import { CommentModel } from "../models/commentModel";
+export class CommentsRepository extends BaseRepository<Comment, CreateCommentDto> {
+  // Implement abstract methods (findAll, create, etc.)
+}
+```
 
-export const commentController = router({
+### 4. Create the Service (`service.ts`)
+Extend `BaseService` and use the Repository.
+```typescript
+export class CommentsService extends BaseService<Comment, CreateCommentDto> {
+  constructor() {
+    super();
+    this.repo = new CommentsRepository();
+  }
+}
+```
+
+### 5. Create the Controller (`controller.ts`)
+Define routes using the Service.
+```typescript
+export const commentsController = router({
   "/api/comments": {
-    GET: () => Response.json(CommentModel.findAll()),
-    POST: async (req) => { /* logic */ }
+    GET: () => Response.json(commentsService.findAll()),
+    POST: async (req) => { /* ... */ }
   }
 });
 ```
 
-### 4. Register in Server (`server/index.ts`)
-Import your controller and add it to the server routes.
+### 6. Create the Module (`module.ts`) and Register
+Export the controller in your module file and register it in `server/index.ts`.
 
 ```typescript
 // server/index.ts
-import { commentController } from "./controllers/commentController";
+import { CommentsModule } from "./modules/comments/comments.module";
 
-// ...
 routes: {
-    "/": homepage,
-    ...postsController,
-    ...commentController, // Add here
+    ...CommentsModule.controller,
 },
 ```
 
