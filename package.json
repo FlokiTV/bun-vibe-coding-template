@@ -19,6 +19,7 @@
 		"@types/react-dom": "^19.2.3",
 		"bun-plugin-tailwind": "^0.1.2",
 		"react-dom": "^19.2.4",
-		"tailwindcss": "^4.1.18"
+		"tailwindcss": "^4.1.18",
+		"wouter": "^3.9.0"
 	}
 }
