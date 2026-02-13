@@ -1,6 +1,6 @@
 import { serve } from "bun";
 import homepage from "../public/index.html";
-import { PostsModule } from "./modules/posts/posts.module";
+import { PostsModule } from "@modules/posts/posts.module";
 
 const args = process.execArgv;
 const isDev = args.includes("--watch");

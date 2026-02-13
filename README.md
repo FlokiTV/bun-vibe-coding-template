@@ -95,7 +95,7 @@ Export the controller in your module file and register it in `server/index.ts`.
 
 ```typescript
 // server/index.ts
-import { CommentsModule } from "./modules/comments/comments.module";
+import { CommentsModule } from "@modules/comments/comments.module";
 
 routes: {
     ...CommentsModule.controller,

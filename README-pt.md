@@ -93,7 +93,7 @@ Exporte o controller no arquivo do módulo e registre no `server/index.ts`.
 
 ```typescript
 // server/index.ts
-import { CommentsModule } from "./modules/comments/comments.module";
+import { CommentsModule } from "@modules/comments/comments.module";
 
 routes: {
     ...CommentsModule.controller,

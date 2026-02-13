@@ -30,6 +30,7 @@
 			"@types": ["./server/types/index"],
 			"@utils/*": ["./server/utils/*"],
 			"@common/*": ["./server/common/*"],
+			"@modules/*": ["./server/modules/*"],
 			"@api/*": ["./server/api/*"]
 		}
 	}
