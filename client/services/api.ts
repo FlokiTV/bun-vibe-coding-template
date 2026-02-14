@@ -1,6 +1,6 @@
-import type { CreateUserDto } from "../../server/modules/users/dto/create-user.dto";
-import type { LoginUserDto } from "../../server/modules/users/dto/login-user.dto";
-import type { User } from "../../server/modules/users/entities/user.entity";
+import type { CreateUserDto } from "@server/modules/users/dto/create-user.dto";
+import type { LoginUserDto } from "@server/modules/users/dto/login-user.dto";
+import type { User } from "@server/modules/users/entities/user.entity";
 
 export interface Post {
 	id: string;
