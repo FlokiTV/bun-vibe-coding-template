@@ -1,8 +1,8 @@
+import { routes } from "@client/routes";
 import type { BaseModule } from "@common/base.module";
 import homepage from "@public/index.html";
 import type { WebsocketData } from "@types";
 import { type HTMLBundle, serve } from "bun";
-import { routes } from "../../client/routes";
 
 const args = process.execArgv;
 const isDev = args.includes("--watch");
