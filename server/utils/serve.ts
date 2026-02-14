@@ -36,7 +36,6 @@ export function init() {
 		routes: {
 			...getFrontendRoutes(), // { "/": homepage, "/chat": homepage }
 			"/ws": (req, server) => {
-				console.log(`upgrade!`);
 				const url = new URL(req.url);
 				const username = url.searchParams.get("username") || "Anonymous";
 				const success = server.upgrade(req, {
