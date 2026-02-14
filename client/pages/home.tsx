@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Chat } from "../components/Chat";
 import { PostForm } from "../components/PostForm";
 import { PostList } from "../components/PostList";
 
-export function Home() {
+export function HomePage() {
 	const [refreshKey, setRefreshKey] = useState(0);
 
 	const handlePostCreated = () => {
@@ -45,7 +44,6 @@ export function Home() {
 					<p>© 2026 Vibe Coding - SPA Example</p>
 				</footer>
 			</div>
-			<Chat />
 		</div>
 	);
 }

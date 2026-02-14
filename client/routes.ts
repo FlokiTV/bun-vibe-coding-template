@@ -1,7 +1,7 @@
-import { Chat } from "./components/Chat";
-import { Home } from "./pages/home";
+import { ChatPage } from "./pages/chat";
+import { HomePage } from "./pages/home";
 
 export const routes = [
-	{ path: "/", component: Home },
-	{ path: "/chat", component: Chat },
+	{ path: "/", component: HomePage },
+	{ path: "/chat", component: ChatPage     },
 ];
