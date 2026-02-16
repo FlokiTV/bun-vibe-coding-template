@@ -34,9 +34,6 @@ export class UsersService extends BaseService<
 		// The repository returns the full object including password.
 		// We might want to strip it here.
 		const { password, ...result } = user;
-		// But BaseService<User> expects User. User interface has password optional?
-		// My User interface has password?: string.
-		// So result (without password) matches User.
 		return result as User;
 	}
 
